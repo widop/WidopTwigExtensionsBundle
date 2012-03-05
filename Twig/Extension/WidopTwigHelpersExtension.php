@@ -24,7 +24,7 @@ class WidopTwigHelpersExtension extends \Twig_Extension
     {
         $this->setTranslator($translator);
         // @TODO change this
-        // Hack to force locale begin correctly set
+        // Hack to force locale being correctly set
         $this->translator->setLocale($locale);
     }
     
