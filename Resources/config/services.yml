@@ -1,0 +1,7 @@
+## YAML Template.
+services:
+  twig.extension.widop.functions:
+    class: Widop\TwigExtensionsBundle\Twig\Extension\WidopTwigHelpersExtension
+    tags:
+      - { name: twig.extension }
+    arguments: [@translator, %locale%]
