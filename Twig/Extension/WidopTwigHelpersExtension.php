@@ -10,7 +10,10 @@ use Symfony\Component\Translation\TranslatorInterface;
  */
 class WidopTwigHelpersExtension extends \Twig_Extension
 {
-
+    /**
+     *
+     * @var type Symfony\Component\Translation\TranslatorInterface A translator
+     */
     protected $translator;
     
     /**
@@ -31,7 +34,7 @@ class WidopTwigHelpersExtension extends \Twig_Extension
     /**
      * Set a translator
      * 
-     * @param TranslatorInterface $translator A translator
+     * @param Symfony\Component\Translation\TranslatorInterface $translator A translator
      * 
      * @return WidopTwigHelpersExtension
      */
@@ -104,14 +107,14 @@ class WidopTwigHelpersExtension extends \Twig_Extension
         }
         
         $moment = $this->translator->transChoice($moment, $intervalNumber);
-        return $this->translator->trans('%nb% %moment%',
-                array('%nb%' => $intervalNumber, '%moment%' => $moment));
+        return $this->translator->trans('%nb% %moment%', array(
+            '%nb%'      => $intervalNumber,
+            '%moment%'  => $moment
+        ));
     }
     
     /**
-     * Returns the name of the extension.
-     *
-     * @return string The extension name
+     * {@inheritdoc}
      */
     public function getName()
     {
