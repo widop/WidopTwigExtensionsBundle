@@ -12,16 +12,16 @@ class WidopTwigHelpersExtension extends \Twig_Extension
 {
     /**
      *
-     * @var type Symfony\Component\Translation\TranslatorInterface A translator
+     * @var type Symfony\Component\Translation\TranslatorInterface A translator.
      */
     protected $translator;
     
     /**
-     * Constructor method
+     * Constructor method.
      * This constructor needs a translator (and the locale for the moment).
      * 
-     * @param TranslatorInterface $translator The translator
-     * @param $locale The variable %locale%
+     * @param Symfony\Component\Translation\TranslatorInterface $translator The translator.
+     * @param string $locale The variable %locale%.
      */
     public function __construct(TranslatorInterface $translator, $locale)
     {
@@ -32,11 +32,11 @@ class WidopTwigHelpersExtension extends \Twig_Extension
     }
     
     /**
-     * Set a translator
+     * Set a translator.
      * 
-     * @param Symfony\Component\Translation\TranslatorInterface $translator A translator
+     * @param Symfony\Component\Translation\TranslatorInterface $translator A translator.
      * 
-     * @return WidopTwigHelpersExtension
+     * @return Widop\TwigExtensionsBundle\Twig\Extension\WidopTwigHelpersExtension
      */
     public function setTranslator(TranslatorInterface $translator)
     {
@@ -78,9 +78,9 @@ class WidopTwigHelpersExtension extends \Twig_Extension
      * into a datetime. If no parameter is passed, the method will take 'now' as
      * as a default date.
      * 
-     * @param $date Either a Datetime or a string (which can be turned into a Datetime)
+     * @param string|\DateTime $date Either a Datetime or a string (which can be turned into a Datetime).
      * 
-     * @return A string similar to a countdown
+     * @return string
      */
     public function format_date_interval($date = null)
     {
