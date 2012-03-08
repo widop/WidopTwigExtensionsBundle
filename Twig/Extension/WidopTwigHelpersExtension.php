@@ -7,6 +7,8 @@ use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * This class declares custom TWIG filters and functions.
+ *
+ * @author Geoffrey Brier <geoffrey@widop.com>
  */
 class WidopTwigHelpersExtension extends \Twig_Extension
 {
@@ -15,11 +17,11 @@ class WidopTwigHelpersExtension extends \Twig_Extension
      * @var type Symfony\Component\Translation\TranslatorInterface A translator.
      */
     protected $translator;
-    
+
     /**
      * Constructor method.
      * This constructor needs a translator (and the locale for the moment).
-     * 
+     *
      * @param Symfony\Component\Translation\TranslatorInterface $translator The translator.
      * @param string $locale The variable %locale%.
      */
@@ -30,21 +32,21 @@ class WidopTwigHelpersExtension extends \Twig_Extension
         // Hack to force locale being correctly set
         $this->translator->setLocale($locale);
     }
-    
+
     /**
      * Set a translator.
-     * 
+     *
      * @param Symfony\Component\Translation\TranslatorInterface $translator A translator.
-     * 
+     *
      * @return Widop\TwigExtensionsBundle\Twig\Extension\WidopTwigHelpersExtension
      */
     public function setTranslator(TranslatorInterface $translator)
     {
         $this->translator = $translator;
-        
+
         return $this;
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -54,7 +56,7 @@ class WidopTwigHelpersExtension extends \Twig_Extension
             'date_interval' => new \Twig_Filter_Method($this, 'format_date_interval', array('is_safe' => array('html'))),
         );
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -64,22 +66,22 @@ class WidopTwigHelpersExtension extends \Twig_Extension
             'date_interval' => new \Twig_Function_Method($this, 'format_date_interval', array('is_safe' => array('html'))),
         );
     }
-    
+
     /**
      * Return a nice date output, very similar to a countdown.
      * This method works both as a filter and a method, and handles I18N and P10N.
-     * 
+     *
      * Examples:
      * {{ date('-2days') | date_interval }} --> 2 days ago
      * {{ date_interval('now') }} <==> {{ date_interval() }} --> A few moments ago
      * {{ date_interval(date('-1years')) }} --> A year ago
-     * 
+     *
      * NB: If the $date parameter is null, the method will try to convert it
      * into a datetime. If no parameter is passed, the method will take 'now' as
      * as a default date.
-     * 
+     *
      * @param string|\DateTime $date Either a Datetime or a string (which can be turned into a Datetime).
-     * 
+     *
      * @return string
      */
     public function format_date_interval($date = null)
@@ -105,14 +107,14 @@ class WidopTwigHelpersExtension extends \Twig_Extension
         } else {
             return $this->translator->trans('wteb.second');
         }
-        
+
         $moment = $this->translator->transChoice($moment, $intervalNumber);
         return $this->translator->trans('%nb% %moment%', array(
             '%nb%'      => $intervalNumber,
             '%moment%'  => $moment
         ));
     }
-    
+
     /**
      * {@inheritdoc}
      */

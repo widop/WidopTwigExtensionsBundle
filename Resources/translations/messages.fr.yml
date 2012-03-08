@@ -1,4 +1,5 @@
 ## wteb: Widop twig extension bundle translation.
+'%nb% %moment%': 'Il y a %nb% %moment%'
 wteb:
     year: '{1}an|]1,Inf]ans'
     month: '[1,Inf[mois'
@@ -6,4 +7,3 @@ wteb:
     hour: '{1}heure|]1,Inf]heures'
     minute: '{1}minute|]1,Inf]minutes'
     second: Il y a quelques instants
-'%nb% %moment%': 'Il y a %nb% %moment%'
