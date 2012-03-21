@@ -15,58 +15,51 @@ use \Widop\TwigExtensionsBundle\Twig\Extension\truncate_after;
 class TwigTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var array Array of strings used by the tests
+     * Data provider.
+     *
+     * @return array
      */
-    protected $dataset;
+    static public function provider()
+    {
+        return array(
+            array('ab c', 1, false, ''),
+            array('ab c', 1, true, 'a'),
+            array('ab c', 2, false, 'ab'),
+            array('ab c', 3, false, 'ab'),
+            array('ab c', 4, false, 'ab c'),
+            array('ab c', 5, false, 'ab c'),
+            array('ab      c', 5, false, 'ab'),
+            array('       c', 1, false, 'c'),
+            array('       c', 2, false, 'c'),
+            array('       c', 5, false, 'c'),
+            array('abcde', 5, false, 'abcde'),
+            array('abcde ', 5, false, 'abcde'),
+            array('abcde ', 6, false, 'abcde'),
+        );
+    }
 
     /**
      * {@inheritdoc}
      */
     public function setUp()
     {
-        $this->dataset = array('ab', ' cd e', 'f');
     }
 
     /**
-     *  @covers \Widop\TwigExtensionsBundle\Twig\Extension\truncate_after()
-     */
+     * @covers \Widop\TwigExtensionsBundle\Twig\Extension\truncate_after()
+     * @expectedException InvalidArgumentException
+    */
     public function testTruncateAfterWithInvalidParams()
     {
-        // empty array
-        $this->assertEquals('', \Widop\TwigExtensionsBundle\Twig\Extension\truncate_after(array(), 20, false));
-        // Invalid length
-        $this->assertEquals('ab cd e f', \Widop\TwigExtensionsBundle\Twig\Extension\truncate_after($this->dataset, 20, false));
-        $this->assertEquals('', \Widop\TwigExtensionsBundle\Twig\Extension\truncate_after($this->dataset, -1, false));
+        $this->assertEquals('', \Widop\TwigExtensionsBundle\Twig\Extension\truncate_after('', -1, false));
     }
 
     /**
-     *  @covers \Widop\TwigExtensionsBundle\Twig\Extension\truncate_after()
+     * @dataProvider provider
+     * @covers \Widop\TwigExtensionsBundle\Twig\Extension\truncate_after()
      */
-    public function testTruncateAfterWithSpecificOffsets()
+    public function testTruncateAfterWithSpecificOffsets($testedString, $offset, $doCutWord, $expectedReturn)
     {
-        // In the middle of a word (first string offset)
-        $this->assertEquals('ab', \Widop\TwigExtensionsBundle\Twig\Extension\truncate_after($this->dataset, 1, false));
-        $this->assertEquals('a', \Widop\TwigExtensionsBundle\Twig\Extension\truncate_after($this->dataset, 1, true));
-        // In the end of an offset (first string offset)
-        $this->assertEquals('ab', \Widop\TwigExtensionsBundle\Twig\Extension\truncate_after($this->dataset, 2, false));
-        $this->assertEquals('ab', \Widop\TwigExtensionsBundle\Twig\Extension\truncate_after($this->dataset, 2, true));
-        // In the middle of a word (second string offset)
-        $this->assertEquals('ab cd', \Widop\TwigExtensionsBundle\Twig\Extension\truncate_after($this->dataset, 3, false));
-        $this->assertEquals('ab', \Widop\TwigExtensionsBundle\Twig\Extension\truncate_after($this->dataset, 3, true));
-        // In the end of a word (second string offset)
-        $this->assertEquals('ab cd', \Widop\TwigExtensionsBundle\Twig\Extension\truncate_after($this->dataset, 4, false));
-        $this->assertEquals('ab c', \Widop\TwigExtensionsBundle\Twig\Extension\truncate_after($this->dataset, 4, true));
-        // On a space (second string offset)
-        $this->assertEquals('ab cd', \Widop\TwigExtensionsBundle\Twig\Extension\truncate_after($this->dataset, 5, false));
-        $this->assertEquals('ab cd', \Widop\TwigExtensionsBundle\Twig\Extension\truncate_after($this->dataset, 5, true));
-    }
-
-    /**
-     *  @covers \Widop\TwigExtensionsBundle\Twig\Extension\truncate_after()
-     */
-    public function testTruncateAfterWithWeirdParams()
-    {
-        $weirdDataset = array('ab', ' cd e   ',  ' f      f ', '        ', "\t", 'a');
-        $this->assertEquals('ab cd e f      f a', \Widop\TwigExtensionsBundle\Twig\Extension\truncate_after($weirdDataset, 200, false));
+        $this->assertEquals($expectedReturn, \Widop\TwigExtensionsBundle\Twig\Extension\truncate_after($testedString, $offset, $doCutWord));
     }
 }

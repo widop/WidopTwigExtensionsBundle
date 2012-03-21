@@ -77,18 +77,29 @@ class WidopTwigHelpersExtension extends \Twig_Extension
 }
 
 /**
- * Properly concat an array of strings after a certain limit. Strings are also
- * trimmed and joined together with a space if possible.
+ * Specially truncate a string given a limit.
  *
- * NB: Given the $cutWord parameter, the behaviour of the method may change.
+ * If this limit is higher than the length of the string, then the limit is
+ * changed to this length. If this limit is inferior or equal to 0, then an
+ * exception is thrown.
+ *
+ * NB: The string is first trimmed.
+ *
+ * Given the $cutWord parameter, the behaviour of the method may change.
  * Examples:
- *  $d = array('ab', ' cd e', 'f');
- *  truncate_after($d, 2, false) --> 'ab'
- *  truncate_after($d, 4, false) --> 'ab cd' // Don't forget, strings are joined using a ' '
- *  truncate_after($d, 4, true)  --> 'ab c'
- *  //!\\ //!\\ //!\\ //!\\
- *  truncate_after($d, 3, false) --> 'ab cd' // Look only for any non word char after the space (that's why the 'e' is taken)
- *  truncate_after($d, 3, true)  --> 'ab'
+ *   truncate_after('ab c', 1, false)      --> ''
+ *   truncate_after('ab c', 1, true)       --> 'a'
+ *   truncate_after('ab c', 2, false)      --> 'ab'
+ *   truncate_after('ab c', 3, false)      --> 'ab'
+ *   truncate_after('ab c', 4, false)      --> 'ab c'
+ *   truncate_after('ab c', 5, false)      --> 'ab c'
+ *   truncate_after('ab      c', 5, false) --> 'ab'
+ *   truncate_after('       c', 1, false)  --> 'c' // string is trimmed!
+ *   truncate_after('       c', 2, false)  --> 'c'
+ *   truncate_after('       c', 5, false)  --> 'c'
+ *   truncate_after('abcde', 5, false)     --> 'abcde'
+ *   truncate_after('abcde ', 5, false)    --> 'abcde'
+ *   truncate_after('abcde ', 6, false)    --> 'abcde'
  *
  * @param array   $strings  An array of strings.
  * @param integer $limit    Limit where to cut
@@ -96,40 +107,38 @@ class WidopTwigHelpersExtension extends \Twig_Extension
  *
  * @return string
  */
-function truncate_after(array $strings, $limit, $cutWords = false)
-{
-    if ($limit < 0) {
-        return '';
+function truncate_after($string, $limit, $doCutWord = false) {
+    $string = trim($string);
+
+    if ($limit <= 0) {
+        throw new \InvalidArgumentException();
+    } else if ($limit >= strlen($string)) {
+        $limit = strlen($string);
     }
 
-    $truncatedString = '';
-    for ($i = 0 ; $i < count($strings) ; $i++) {
-        $tLen = strlen($truncatedString);
-        // Join words with a space
-        $strings[$i] = trim($strings[$i]);
-        if ($i > 0 && strlen($strings[$i])) {
-            $strings[$i] = ' ' . $strings[$i];
-        }
-
-        // Fully concat words if i still can
-        if (($tLen + strlen($strings[$i])) - $limit <= 0) {
-            $truncatedString .= $strings[$i];
-        } else {
-            // Find offset where to cut
-            $offset = $limit - ($tLen + strlen($strings[$i]));
-            if (!$cutWords) {
-                if (preg_match('/(\W)/', substr($strings[$i], $offset), $matches, PREG_OFFSET_CAPTURE)) {
-                    $offset += $matches[1][1];
-                } else {
-                    $offset = strlen($strings[$i]);
-                }
+    if ($doCutWord) {
+        $offset = $limit;
+    } else {
+        // Check & get next word offset
+        $offsetNextWord = (strlen($string) == $limit) ? $limit : 0;
+        if (preg_match('/(\W)/', substr($string, $limit), $match, PREG_OFFSET_CAPTURE)) {
+            if ($match[1][1] == 0) { // Was that the last character of a word?
+                $offsetNextWord = $limit + $match[1][1];
             }
-            $truncatedString .= substr($strings[$i], 0, $offset);
-            break;
+        }
+
+        if ($offsetNextWord !== 0) {
+            $offset = $offsetNextWord;
+        } else {
+            // Get previous word offset
+            $offset = 0;
+            if (preg_match_all('/(\W)/', substr($string, 0, $limit), $match, PREG_OFFSET_CAPTURE)) {
+                $offset = array_pop(array_pop(array_pop($match)));
+            }
         }
     }
 
-    return trim($truncatedString, ' ');
+    return trim(substr($string, 0, $offset));
 }
 
 /**
