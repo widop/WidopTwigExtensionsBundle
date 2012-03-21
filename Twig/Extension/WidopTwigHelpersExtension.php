@@ -112,25 +112,19 @@ function truncate_after($string, $limit, $doCutWord = false) {
 
     if ($limit <= 0) {
         throw new \InvalidArgumentException();
-    } else if ($limit >= strlen($string)) {
-        $limit = strlen($string);
     }
 
-    if ($doCutWord) {
-        $offset = $limit;
-    } else {
-        // Check & get next word offset
-        $offsetNextWord = (strlen($string) == $limit) ? $limit : 0;
-        if (preg_match('/(\W)/', substr($string, $limit), $match, PREG_OFFSET_CAPTURE)) {
-            if ($match[1][1] == 0) { // Was that the last character of a word?
-                $offsetNextWord = $limit + $match[1][1];
-            }
-        }
+    if ($limit >= strlen($string)) {
+        return $string;
+    }
 
-        if ($offsetNextWord !== 0) {
-            $offset = $offsetNextWord;
-        } else {
-            // Get previous word offset
+    $offset = $limit;
+
+
+    if (!$doCutWord) {
+        $charAfterOffset = $string[$offset];
+        if (!preg_match('/\W/', $charAfterOffset)) {
+            // We are trying to cut a word in half, we need to find the end of the previous word
             $offset = 0;
             if (preg_match_all('/(\W)/', substr($string, 0, $limit), $match, PREG_OFFSET_CAPTURE)) {
                 $offset = array_pop(array_pop(array_pop($match)));
