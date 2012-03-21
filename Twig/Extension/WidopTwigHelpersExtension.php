@@ -21,7 +21,7 @@ class WidopTwigHelpersExtension extends \Twig_Extension
      * The constructor needs a translator (and the locale for the moment).
      *
      * @param \Symfony\Component\Translation\TranslatorInterface $translator The translator.
-     * @param string $locale The variable %locale%.
+     * @param string                                             $locale     The variable %locale%.
      */
     public function __construct(TranslatorInterface $translator, $locale)
     {
@@ -90,8 +90,8 @@ class WidopTwigHelpersExtension extends \Twig_Extension
  *  truncate_after($d, 3, false) --> 'ab cd' // Look only for any non word char after the space (that's why the 'e' is taken)
  *  truncate_after($d, 3, true)  --> 'ab'
  *
- * @param array $strings An array of strings.
- * @param integer $limit Limit where to cut
+ * @param array   $strings  An array of strings.
+ * @param integer $limit    Limit where to cut
  * @param boolean $cutWords Do we cut words or not (optionnal).
  *
  * @return string
@@ -102,9 +102,9 @@ function truncate_after(array $strings, $limit, $cutWords = false)
         return '';
     }
 
-    $truncated_string = '';
+    $truncatedString = '';
     for ($i = 0 ; $i < count($strings) ; $i++) {
-        $tLen = strlen($truncated_string);
+        $tLen = strlen($truncatedString);
         // Join words with a space
         $strings[$i] = trim($strings[$i]);
         if ($i > 0 && strlen($strings[$i])) {
@@ -113,7 +113,7 @@ function truncate_after(array $strings, $limit, $cutWords = false)
 
         // Fully concat words if i still can
         if (($tLen + strlen($strings[$i])) - $limit <= 0) {
-            $truncated_string .= $strings[$i];
+            $truncatedString .= $strings[$i];
         } else {
             // Find offset where to cut
             $offset = $limit - ($tLen + strlen($strings[$i]));
@@ -124,12 +124,12 @@ function truncate_after(array $strings, $limit, $cutWords = false)
                     $offset = strlen($strings[$i]);
                 }
             }
-            $truncated_string .= substr($strings[$i], 0, $offset);
+            $truncatedString .= substr($strings[$i], 0, $offset);
             break;
         }
     }
 
-    return trim($truncated_string, ' ');
+    return trim($truncatedString, ' ');
 }
 
 /**
@@ -174,6 +174,7 @@ function format_date_interval($date = null)
     }
 
     $moment = $this->translator->transChoice($moment, $intervalNumber);
+
     return $this->translator->trans('%nb% %moment%', array(
         '%nb%'      => $intervalNumber,
         '%moment%'  => $moment

@@ -16,14 +16,15 @@ $loader->register();
 
 spl_autoload_register(function($class)
 {
-    if(strpos($class, 'Widop\\TwigExtensionsBundle\\') === 0)
-    {
+    if (strpos($class, 'Widop\\TwigExtensionsBundle\\') === 0) {
         $path = __DIR__.'/../'.implode('/', array_slice(explode('\\', $class), 2)).'.php';
 
-        if(!stream_resolve_include_path($path))
+        if (!stream_resolve_include_path($path)) {
             return false;
+        }
 
         require_once $path;
+
         return true;
     }
 });
