@@ -4,62 +4,77 @@ namespace Widop\TwigExtensionsBundle\Tests\Twig\Extension;
 
 require_once __DIR__ . '/../../../Twig/Extension/WidopTwigHelpersExtension.php';
 
-use \Widop\TwigExtensionsBundle\Twig\Extension\truncate_after;
+use \Widop\TwigExtensionsBundle\Twig\Extension as Ext;
 
 /**
  * Unit test class of the the widop twig bundle.
  *
- * @todo Check how to really call truncate_after function
  * @author Geoffrey Brier <geoffrey@widop.com>
+ * @author Clément Herreman <clement@widop.com>
  */
 class TwigTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * Data provider.
-     *
-     * @return array
-     */
-    static public function provider()
-    {
-        return array(
-            array('ab c', 1, false, ''),
-            array('ab c', 1, true, 'a'),
-            array('ab c', 2, false, 'ab'),
-            array('ab c', 3, false, 'ab'),
-            array('ab c', 4, false, 'ab c'),
-            array('ab c', 5, false, 'ab c'),
-            array('ab      c', 5, false, 'ab'),
-            array('       c', 1, false, 'c'),
-            array('       c', 2, false, 'c'),
-            array('       c', 5, false, 'c'),
-            array('abcde', 5, false, 'abcde'),
-            array('abcde ', 5, false, 'abcde'),
-            array('abcde ', 6, false, 'abcde'),
-        );
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setUp()
-    {
-    }
-
     /**
      * @covers \Widop\TwigExtensionsBundle\Twig\Extension\truncate_after()
      * @expectedException InvalidArgumentException
     */
     public function testTruncateAfterWithInvalidParams()
     {
-        $this->assertEquals('', \Widop\TwigExtensionsBundle\Twig\Extension\truncate_after('', -1, false));
+        $this->assertEquals('', Ext\truncate_after('', -1, false));
     }
 
     /**
-     * @dataProvider provider
      * @covers \Widop\TwigExtensionsBundle\Twig\Extension\truncate_after()
      */
-    public function testTruncateAfterWithSpecificOffsets($testedString, $offset, $doCutWord, $expectedReturn)
+    public function testTruncateWithLimitBiggerThanLength()
     {
-        $this->assertEquals($expectedReturn, \Widop\TwigExtensionsBundle\Twig\Extension\truncate_after($testedString, $offset, $doCutWord));
+        $this->assertEquals('the quick brown fox', Ext\truncate_after('the quick brown fox', 999));
+    }
+
+    /**
+     * @covers \Widop\TwigExtensionsBundle\Twig\Extension\truncate_after()
+     */
+    public function testTruncateDoesntCutSpaceSeparatedWord()
+    {
+        $this->assertEquals('the quick', Ext\truncate_after('the quick brown fox', 12));
+        $this->assertEquals('the', Ext\truncate_after('the quick brown fox', 6));
+        $this->assertEquals('the', Ext\truncate_after('the quick brown fox', 3));
+    }
+
+    /**
+     * @covers \Widop\TwigExtensionsBundle\Twig\Extension\truncate_after()
+     */
+    public function testTruncateDoesntRemovePunctuation()
+    {
+        //                                                    the quick. brown fox
+        //                                                     13 is here ^
+        $this->assertEquals('the quick.', Ext\truncate_after('the quick. brown fox', 13));
+        $this->assertEquals('the quick,', Ext\truncate_after('the quick, brown fox', 13));
+        $this->assertEquals('the quick;', Ext\truncate_after('the quick; brown fox', 13));
+        $this->assertEquals('the quick', Ext\truncate_after('the quick (brown fox)', 13));
+    }
+
+    /**
+     * @covers \Widop\TwigExtensionsBundle\Twig\Extension\truncate_after()
+     */
+    public function testTrucateCutWord()
+    {
+        $this->assertEquals('the qui', Ext\truncate_after('the quick brown fox', 7, true));
+    }
+
+    /**
+     * @covers \Widop\TwigExtensionsBundle\Twig\Extension\truncate_after()
+     */
+    public function testTrucateTrimOriginalString()
+    {
+        $this->assertEquals('lorem', Ext\truncate_after('  lorem ipsum sid amet', 6));
+    }
+
+    /**
+     * @covers \Widop\TwigExtensionsBundle\Twig\Extension\truncate_after()
+     */
+    public function testTrucateTrimTruncatedString()
+    {
+        $this->assertEquals('lorem ipsum', Ext\truncate_after('lorem ipsum    ', 14));
     }
 }
