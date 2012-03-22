@@ -5,7 +5,6 @@ system(sprintf('php %s', escapeshellarg(__DIR__.'/bin/vendors')));
 require_once __DIR__.'/'.$_SERVER['SYMFONY'].'/Symfony/Component/ClassLoader/UniversalClassLoader.php';
 require_once __DIR__.'/vendor/twig/lib/Twig/Autoloader.php';
 
-
 use Symfony\Component\ClassLoader\UniversalClassLoader;
 
 Twig_Autoloader::register();

@@ -15,7 +15,7 @@ class WidopTwigHelpersExtension extends \Twig_Extension
     /**
      * @var Symfony\Component\Translation\TranslatorInterface A translator.
      */
-    protected $translator;
+    private $translator;
 
     /**
      * The constructor needs a translator (and the locale for the moment).
@@ -62,7 +62,7 @@ class WidopTwigHelpersExtension extends \Twig_Extension
     {
         return array(
             'date_interval' => new \Twig_Function_Method('format_date_interval', array('is_safe' => array('html'))),
-            'truncate_after' => new \Twig_Function_Method('truncate_after', array('is_safe' => array('html'))),
+            'truncate_at' => new \Twig_Function_Method('truncate_at', array('is_safe' => array('html'))),
         );
     }
 
@@ -79,38 +79,37 @@ class WidopTwigHelpersExtension extends \Twig_Extension
 /**
  * Specially truncate a string given a limit.
  *
- * If this limit is higher than the length of the string, then the limit is
- * changed to this length. If this limit is inferior or equal to 0, then an
- * exception is thrown.
+ * If this limit is higher than the length of the string, then the trimmed string
+ * is returned. If this limit is inferior or equal to 0, then an exception is thrown.
  *
  * NB: The string is first trimmed.
  *
  * Given the $cutWord parameter, the behaviour of the method may change.
  * Examples:
- *   truncate_after('ab c', 1, false)      --> ''
- *   truncate_after('ab c', 1, true)       --> 'a'
- *   truncate_after('ab c', 2, false)      --> 'ab'
- *   truncate_after('ab c', 3, false)      --> 'ab'
- *   truncate_after('ab c', 4, false)      --> 'ab c'
- *   truncate_after('ab c', 5, false)      --> 'ab c'
- *   truncate_after('ab      c', 5, false) --> 'ab'
- *   truncate_after('       c', 1, false)  --> 'c' // string is trimmed!
- *   truncate_after('       c', 2, false)  --> 'c'
- *   truncate_after('       c', 5, false)  --> 'c'
- *   truncate_after('abcde', 5, false)     --> 'abcde'
- *   truncate_after('abcde ', 5, false)    --> 'abcde'
- *   truncate_after('abcde ', 6, false)    --> 'abcde'
+ *   truncate_at('ab c', 1, false)      --> ''
+ *   truncate_at('ab c', 1, true)       --> 'a'
+ *   truncate_at('ab c', 2, false)      --> 'ab'
+ *   truncate_at('ab c', 3, false)      --> 'ab'
+ *   truncate_at('ab c', 4, false)      --> 'ab c'
+ *   truncate_at('ab c', 5, false)      --> 'ab c'
+ *   truncate_at('ab      c', 5, false) --> 'ab'
+ *   truncate_at('       c', 1, false)  --> 'c' // string is trimmed!
+ *   truncate_at('       c', 2, false)  --> 'c'
+ *   truncate_at('       c', 5, false)  --> 'c'
+ *   truncate_at('abcde', 5, false)     --> 'abcde'
+ *   truncate_at('abcde ', 5, false)    --> 'abcde'
+ *   truncate_at('abcde ', 6, false)    --> 'abcde'
  *
  * @param array   $strings  An array of strings.
  * @param integer $limit    Limit where to cut
- * @param boolean $cutWords Do we cut words or not (optionnal).
+ * @param boolean $doCutWord Do we cut words or not (optionnal).
  *
  * @return string
  */
-function truncate_after($string, $limit, $doCutWord = false) {
+function truncate_at($string, $limit, $doCutWord = false) {
     $string = trim($string);
 
-    if ($limit <= 0) {
+    if ($limit <= 0 || is_int($limit) === false || is_bool($doCutWord) === false) {
         throw new \InvalidArgumentException();
     }
 
@@ -136,25 +135,25 @@ function truncate_after($string, $limit, $doCutWord = false) {
 }
 
 /**
-    * Return a nice date output, very similar to a countdown.
-    * This method works both as a filter and a method, and handles I18N and P10N.
-    *
-    * Examples:
-    * {{ date('-2days') | date_interval }} --> 2 days ago
-    * {{ date_interval('now') }} <==> {{ date_interval() }} --> A few moments ago
-    * {{ date_interval(date('-1years')) }} --> A year ago
-    *
-    * NB: If the $date parameter is null, the method will try to convert it
-    * into a datetime. If no parameter is passed, the method will take 'now' as
-    * as a default date.
-    *
-    * @param string|\DateTime $date Either a Datetime or a string (which can be turned into a Datetime).
-    *
-    * @return string
-    */
+ * Return a nice date output, very similar to a countdown.
+ * This method works both as a filter and a method, and handles I18N and P10N.
+ *
+ * Examples:
+ * {{ date('-2days') | date_interval }} --> 2 days ago
+ * {{ date_interval('now') }} <==> {{ date_interval() }} --> A few moments ago
+ * {{ date_interval(date('-1years')) }} --> A year ago
+ *
+ * NB: If the $date parameter is null, the method will try to convert it
+ * into a datetime. If no parameter is passed, the method will take 'now' as
+ * as a default date.
+ *
+ * @param string|\DateTime $date Either a Datetime or a string (which can be turned into a Datetime).
+ *
+ * @return string
+ */
 function format_date_interval($date = null)
 {
-    $now = new \DateTime('now');
+    $now = new \DateTime();
     $interval = $now->diff(($date instanceof \DateTime)? $date : new \DateTime($date));
 
     if ($interval->y !== 0) {
