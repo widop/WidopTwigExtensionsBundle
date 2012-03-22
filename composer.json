@@ -1,0 +1,22 @@
+{
+    "name": "widop/twig-extensions-bundle",
+    "type": "symfony-bundle",
+    "description": "Provides awesome TWIG extensions for your Symfony2 project.",
+    "keywords": ["twig", "twig extensions", "symfony", "widop"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Geoffrey Brier",
+            "email": "geoffrey@widop.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "symfony/framework-bundle": "2.*",
+        "twig/twig": "1.6.*"
+    },
+    "autoload": {
+        "psr-0": { "Widop\\TwigExtensionsBundle": "" }
+    },
+    "target-dir": "Widop/TwigExtensionsBundle"
+}

@@ -119,7 +119,6 @@ function truncate_at($string, $limit, $doCutWord = false) {
 
     $offset = $limit;
 
-
     if (!$doCutWord) {
         $charAfterOffset = $string[$offset];
         if (!preg_match('/\W/', $charAfterOffset)) {

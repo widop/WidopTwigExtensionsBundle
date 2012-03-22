@@ -12,13 +12,13 @@ use \Widop\TwigExtensionsBundle\Twig\Extension as Ext;
  * @author Geoffrey Brier <geoffrey@widop.com>
  * @author Clément Herreman <clement@widop.com>
  */
-class TwigTest extends \PHPUnit_Framework_TestCase
+class TruncateAtTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @covers \Widop\TwigExtensionsBundle\Twig\Extension\truncate_at()
      * @expectedException InvalidArgumentException
     */
-    public function testTruncateAfterWithInvalidParams()
+    public function testTruncateAtWithInvalidParams()
     {
         $this->assertEquals('', Ext\truncate_at('', -1, false));
     }
@@ -26,7 +26,7 @@ class TwigTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers \Widop\TwigExtensionsBundle\Twig\Extension\truncate_at()
      */
-    public function testTruncateWithLimitBiggerThanLength()
+    public function testTruncateAtWithLimitBiggerThanLength()
     {
         $this->assertEquals('the quick brown fox', Ext\truncate_at('the quick brown fox', 999));
     }
@@ -34,7 +34,7 @@ class TwigTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers \Widop\TwigExtensionsBundle\Twig\Extension\truncate_at()
      */
-    public function testTruncateDoesntCutSpaceSeparatedWord()
+    public function testTruncateAtDoesntCutSpaceSeparatedWord()
     {
         $this->assertEquals('the quick', Ext\truncate_at('the quick brown fox', 12));
         $this->assertEquals('the', Ext\truncate_at('the quick brown fox', 6));
@@ -44,7 +44,7 @@ class TwigTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers \Widop\TwigExtensionsBundle\Twig\Extension\truncate_at()
      */
-    public function testTruncateDoesntRemovePunctuation()
+    public function testTruncateAtDoesntRemovePunctuation()
     {
         //                                                    the quick. brown fox
         //                                                     13 is here ^
@@ -57,7 +57,7 @@ class TwigTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers \Widop\TwigExtensionsBundle\Twig\Extension\truncate_at()
      */
-    public function testTrucateCutWord()
+    public function testTrucateAtCutWord()
     {
         $this->assertEquals('the qui', Ext\truncate_at('the quick brown fox', 7, true));
     }
@@ -65,7 +65,7 @@ class TwigTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers \Widop\TwigExtensionsBundle\Twig\Extension\truncate_at()
      */
-    public function testTrucateTrimOriginalString()
+    public function testTrucateAtTrimOriginalString()
     {
         $this->assertEquals('lorem', Ext\truncate_at('  lorem ipsum sid amet', 6));
     }
@@ -73,7 +73,7 @@ class TwigTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers \Widop\TwigExtensionsBundle\Twig\Extension\truncate_at()
      */
-    public function testTrucateTrimTruncatedString()
+    public function testTrucateAtTrimTruncatedString()
     {
         $this->assertEquals('lorem ipsum', Ext\truncate_at('lorem ipsum    ', 14));
     }
