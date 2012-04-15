@@ -1,7 +1,10 @@
-## YAML Template.
+parameters:
+   widop_twig_extensions.helpers.class: Widop\TwigExtensionsBundle\Twig\Extension\WidopTwigHelpersExtension
+
 services:
-    twig.extension.widop.functions:
-      class: Widop\TwigExtensionsBundle\Twig\Extension\WidopTwigHelpersExtension
+    widop_twig_extensions.helpers:
+      class: %widop_twig_extensions.helpers.class%
+      arguments: [ @translator, %locale% ]
+      public: false
       tags:
         - { name: twig.extension }
-      arguments: [@translator, %locale%]
