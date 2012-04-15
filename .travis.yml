@@ -1,0 +1,15 @@
+language: php
+
+php:
+  - 5.3
+  - 5.4
+
+before_script: ./Tests/bin/vendors
+
+script: phpunit
+
+notifications:
+  email:
+    - timothee@widop.com
+    - geloen.eric@gmail.com
+    - geoffrey@widop.com
