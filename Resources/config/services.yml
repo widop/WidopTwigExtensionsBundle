@@ -1,0 +1,10 @@
+parameters:
+   widop_twig_extensions.helpers.class: Widop\TwigExtensionsBundle\Twig\Extension\WidopTwigHelpersExtension
+
+services:
+    widop_twig_extensions.helpers:
+      class: %widop_twig_extensions.helpers.class%
+      arguments: [ @translator, %locale% ]
+      public: false
+      tags:
+        - { name: twig.extension }
