@@ -1,0 +1,9 @@
+'%nb% %moment%': '%nb% %moment% ago'
+
+date_interval:
+    year: '{1}year|]1,Inf]years'
+    month: '{1}month|]1,Inf]months'
+    day: '{1}day|]1,Inf]days'
+    hour: '{1}hour|]1,Inf]hours'
+    minute: '{1}minute|]1,Inf]minutes'
+    second: A few seconds ago
