@@ -187,7 +187,9 @@ class WidopTwigHelpersExtension extends \Twig_Extension
                 // We are trying to cut a word in half, we need to find the end of the previous word
                 $offset = 0;
                 if (preg_match_all('/(\W)/', substr($string, 0, $limit), $match, PREG_OFFSET_CAPTURE)) {
-                    $offset = array_pop(array_pop(array_pop($match)));
+                    $match = array_pop($match);
+                    $match = array_pop($match);
+                    $offset = array_pop($match);
                 }
             }
         }
