@@ -1,11 +1,9 @@
-# Widop Twig Extensions
-
-This bundle offers some additional twig extensions.
+The bundle offers some additional twig extensions.
 
 The available extensions are:
 
- - date_interval: Act as an inversed countdown.
- - truncate_at: Truncates a string at a specific offset or before the current word so that the given limit is never exceeded.
+ - `date_interval` Acts as an inversed countdown.
+ - `truncate_at` Truncates a string at a specific offset or before the current word so that the given limit is never exceeded.
 
 Documentation
 -------------
