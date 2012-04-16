@@ -1,19 +1,29 @@
 <?php
 
+/*
+ * This file is part of the Widop package.
+ *
+ * (c) Widop <contact@widop.com>
+ *
+ * For the full copyright and license information, please read the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Widop\TwigExtensionsBundle\Twig\Extension;
 
-use Symfony\Component\HttpKernel\KernelInterface;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\HttpKernel\KernelInterface,
+    Symfony\Component\Translation\TranslatorInterface;
 
 /**
- * This class declares custom TWIG filters and functions.
+ * This class declares custom twig filters and functions.
  *
+ * @author GeLo <geloen.eric@gmail.com>
  * @author Geoffrey Brier <geoffrey@widop.com>
  */
 class WidopTwigHelpersExtension extends \Twig_Extension
 {
     /**
-     * @var Symfony\Component\Translation\TranslatorInterface A translator.
+     * @var \Symfony\Component\Translation\TranslatorInterface A translator.
      */
     private $translator;
 
@@ -26,8 +36,10 @@ class WidopTwigHelpersExtension extends \Twig_Extension
     public function __construct(TranslatorInterface $translator, $locale)
     {
         $this->setTranslator($translator);
-        // @TODO change this
-        // Hack to force locale being correctly set
+
+        /**
+         * @todop Use the user locale insted of the default locale.
+         */
         $this->translator->setLocale($locale);
     }
 
@@ -52,6 +64,7 @@ class WidopTwigHelpersExtension extends \Twig_Extension
     {
         return array(
             'date_interval' => new \Twig_Filter_Method($this, 'date_interval', array('is_safe' => array('html'))),
+            'truncate_at'   => new \Twig_Filter_Method($this, 'truncate_at', array('is_safe' => array('html'))),
         );
     }
 
@@ -67,44 +80,43 @@ class WidopTwigHelpersExtension extends \Twig_Extension
     }
 
     /**
-    * Return a nice date output, very similar to a countdown.
-    * This method works both as a filter and a method, and handles I18N and P10N.
-    *
-    * Examples:
-    * {{ date('-2days') | date_interval }} --> 2 days ago
-    * {{ date_interval('now') }} <==> {{ date_interval() }} --> A few moments ago
-    * {{ date_interval(date('-1years')) }} --> A year ago
-    *
-    * NB: If the $date parameter is null, the method will try to convert it
-    * into a datetime. If no parameter is passed, the method will take 'now' as
-    * as a default date.
-    *
-    * @param string|\DateTime $date Either a Datetime or a string (which can be turned into a Datetime).
-    *
-    * @return string
-    */
+     * Return a nice date output, very similar to a countdown.
+     * This method works both as a filter and a method, and handles I18N and P10N.
+     *
+     * Examples:
+     *  - {{ date('-2days') | date_interval }}                  --> 2 days ago
+     *  - {{ date_interval('now') }} <==> {{ date_interval() }} --> A few moments ago
+     *  - {{ date_interval(date('-1years')) }}                  --> A year ago
+     *
+     * NB: If the $date parameter is null, the method will try to convert it into a datetime.
+     *     If no parameter is passed, the method will take 'now' as a default date.
+     *
+     * @param string|\DateTime $date Either a Datetime or a string (which can be turned into a Datetime).
+     *
+     * @return string
+     */
     public function date_interval($date = null)
     {
         $now = new \DateTime();
-        $interval = $now->diff(($date instanceof \DateTime)? $date : new \DateTime($date));
+        $interval = $now->diff(($date instanceof \DateTime) ? $date : new \DateTime($date));
 
         if ($interval->y !== 0) {
             $intervalNumber = $interval->y;
-            $moment = 'wteb.year';
+            $moment = 'date_interval.year';
         } else if ($interval->m !== 0) {
             $intervalNumber = $interval->m;
-            $moment = 'wteb.month';
+            $moment = 'date_interval.month';
         } else if ($interval->d !== 0) {
             $intervalNumber = $interval->d;
-            $moment = 'wteb.day';
+            $moment = 'date_interval.day';
         } else if ($interval->h !== 0) {
             $intervalNumber = $interval->h;
-            $moment = 'wteb.hour';
+            $moment = 'date_interval.hour';
         } else if ($interval->i !== 0) {
             $intervalNumber = $interval->i;
-            $moment = 'wteb.minute';
+            $moment = 'date_interval.minute';
         } else {
-            return $this->translator->trans('wteb.second');
+            return $this->translator->trans('date_interval.second');
         }
 
         $moment = $this->translator->transChoice($moment, $intervalNumber);
@@ -116,39 +128,49 @@ class WidopTwigHelpersExtension extends \Twig_Extension
     }
 
     /**
-    * Specially truncate a string given a limit.
-    *
-    * If this limit is higher than the length of the string, then the trimmed string
-    * is returned. If this limit is inferior or equal to 0, then an exception is thrown.
-    *
-    * NB: The string is first trimmed.
-    *
-    * Given the $cutWord parameter, the behaviour of the method may change.
-    * Examples:
-    *   truncate_at('ab c', 1, false)      --> ''
-    *   truncate_at('ab c', 1, true)       --> 'a'
-    *   truncate_at('ab c', 2, false)      --> 'ab'
-    *   truncate_at('ab c', 3, false)      --> 'ab'
-    *   truncate_at('ab c', 4, false)      --> 'ab c'
-    *   truncate_at('ab c', 5, false)      --> 'ab c'
-    *   truncate_at('ab      c', 5, false) --> 'ab'
-    *   truncate_at('       c', 1, false)  --> 'c' // string is trimmed!
-    *   truncate_at('       c', 2, false)  --> 'c'
-    *   truncate_at('       c', 5, false)  --> 'c'
-    *   truncate_at('abcde', 5, false)     --> 'abcde'
-    *   truncate_at('abcde ', 5, false)    --> 'abcde'
-    *   truncate_at('abcde ', 6, false)    --> 'abcde'
-    *
-    * @param array   $strings  An array of strings.
-    * @param integer $limit    Limit where to cut
-    * @param boolean $doCutWord Do we cut words or not (optionnal).
-    *
-    * @return string
-    */
-    public function truncate_at($string, $limit, $doCutWord = false) {
+     * Specially truncate a string given a limit.
+     *
+     * If this limit is higher than the length of the string, then the trimmed string
+     * is returned. If this limit is inferior or equal to 0, then an exception is thrown.
+     *
+     * This method works both as a filter and a method, and handles I18N and P10N.
+     *
+     * NB: The string is first trimmed.
+     *
+     * Given the $cutWord parameter, the behaviour of the method may change.
+     *
+     * Examples:
+     *  - {{ 'ab cd' | truncate_at(3) }}     --> 'ab'
+     *  - {{ truncate_at('ab cd', 3) }}      --> 'ab'
+     *
+     *  - {{ truncate_at('ab c', 1) }}       --> ''
+     *  - {{ truncate_at('ab c', 1, true) }} --> 'a'
+     *
+     *  - {{ truncate_at('ab c', 2) }}       --> 'ab'
+     *  - {{ truncate_at('ab c', 3) }}       --> 'ab'
+     *  - {{ truncate_at('ab c', 4) }}       --> 'ab c'
+     *  - {{ truncate_at('ab c', 5) }}       --> 'ab c'
+     *
+     *  - {{ truncate_at('ab      c', 5) }}  --> 'ab'
+     *  - {{ truncate_at('       c', 1) }}   --> 'c' // string is trimmed!
+     *  - {{ truncate_at('       c', 2) }}   --> 'c' // string is trimmed!
+     *  - {{ truncate_at('       c', 5) }}   --> 'c' // string is trimmed!
+     *
+     *  - {{ truncate_at('abcde', 5)  }}     --> 'abcde'
+     *  - {{ truncate_at('abcde ', 5) }}     --> 'abcde'
+     *  - {{ truncate_at('abcde ', 6) }}     --> 'abcde'
+     *
+     * @param array   $string  The string to truncate.
+     * @param integer $limit   The limit where to cut.
+     * @param boolean $cutWord TRUE if a word can be cutted else FALSE.
+     *
+     * @return string
+     */
+    public function truncate_at($string, $limit, $cutWord = false)
+    {
         $string = trim($string);
 
-        if ($limit <= 0 || is_int($limit) === false || is_bool($doCutWord) === false) {
+        if ($limit <= 0 || !is_int($limit) || !is_bool($cutWord)) {
             throw new \InvalidArgumentException();
         }
 
@@ -158,15 +180,14 @@ class WidopTwigHelpersExtension extends \Twig_Extension
 
         $offset = $limit;
 
-        if (!$doCutWord) {
+        if (!$cutWord) {
             $charAfterOffset = $string[$offset];
+
             if (!preg_match('/\W/', $charAfterOffset)) {
                 // We are trying to cut a word in half, we need to find the end of the previous word
                 $offset = 0;
                 if (preg_match_all('/(\W)/', substr($string, 0, $limit), $match, PREG_OFFSET_CAPTURE)) {
-                    $match = array_pop($match);
-                    $match = array_pop($match);
-                    $offset = array_pop($match);
+                    $offset = array_pop(array_pop(array_pop($match)));
                 }
             }
         }

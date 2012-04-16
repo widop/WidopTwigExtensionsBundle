@@ -1,6 +1,6 @@
-## wteb: Widop twig extension bundle translation.
 '%nb% %moment%': 'Il y a %nb% %moment%'
-wteb:
+
+date_interval:
     year: '{1}an|]1,Inf]ans'
     month: '[1,Inf[mois'
     day: '{1}jour|]1,Inf]jours'

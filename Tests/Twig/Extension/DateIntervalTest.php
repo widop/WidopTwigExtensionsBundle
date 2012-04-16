@@ -1,13 +1,23 @@
 <?php
 
+/*
+ * This file is part of the Widop package.
+ *
+ * (c) Widop <contact@widop.com>
+ *
+ * For the full copyright and license information, please read the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Widop\TwigExtensionsBundle\Tests\Twig\Extension;
 
 require_once __DIR__ . '/../../../Twig/Extension/WidopTwigHelpersExtension.php';
 
-use Widop\TwigExtensionsBundle\Twig\Extension\WidopTwigHelpersExtension as Ext;
-use Symfony\Component\Translation\Translator;
-use Symfony\Component\Translation\MessageSelector;
-use Symfony\Component\Translation\Loader\YamlFileLoader;
+use Widop\TwigExtensionsBundle\Twig\Extension\WidopTwigHelpersExtension;
+
+use Symfony\Component\Translation\Translator,
+    Symfony\Component\Translation\MessageSelector,
+    Symfony\Component\Translation\Loader\YamlFileLoader;
 
 /**
  * Unit test class of the the widop twig bundle.
@@ -19,7 +29,7 @@ class DateIntervalTest extends \PHPUnit_Framework_TestCase
     /**
      * @var \Widop\TwigExtensionsBundle\Twig\Extension\WidopTwigHelpersExtension The widop twig extension
      */
-    private $twigExt;
+    private $twigExtension;
 
     /**
      *  {@inheritdoc}
@@ -27,15 +37,14 @@ class DateIntervalTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $locale = 'en';
+
         $translator = new Translator($locale);
         $translator->addLoader('yaml', new YamlFileLoader());
-        $translator->addResource(
-            'yaml',
-            __DIR__.'/../../../Resources/translations/messages.en.yml',
-            $locale
-        );
 
-        $this->twigExt = new Ext($translator, $locale);
+        $ressource = __DIR__.'/../../../Resources/translations/messages.en.yml';
+        $translator->addResource('yaml', $ressource, $locale);
+
+        $this->twigExtension = new WidopTwigHelpersExtension($translator, $locale);
     }
 
     /**
@@ -44,7 +53,7 @@ class DateIntervalTest extends \PHPUnit_Framework_TestCase
     public function testDateIntervalIsWorkingWithTwig()
     {
         $twig = new \Twig_Environment(new \Twig_Loader_String());
-        $twig->addExtension($this->twigExt);
+        $twig->addExtension($this->twigExtension);
         $this->assertEquals('A few seconds ago', $twig->render("{{ date_interval() }}"));
         $this->assertEquals('A few seconds ago', $twig->render("{{ 'now' | date_interval }}"));
     }
@@ -54,8 +63,8 @@ class DateIntervalTest extends \PHPUnit_Framework_TestCase
      */
     public function testDateIntervalWithDateTime()
     {
-        $this->assertEquals('1 minute ago', $this->twigExt->date_interval(new \DateTime('-1minutes')));
-        $this->assertEquals('2 minutes ago', $this->twigExt->date_interval(new \DateTime('-2minutes')));
+        $this->assertEquals('1 minute ago', $this->twigExtension->date_interval(new \DateTime('-1minutes')));
+        $this->assertEquals('2 minutes ago', $this->twigExtension->date_interval(new \DateTime('-2minutes')));
     }
 
     /**
@@ -63,8 +72,8 @@ class DateIntervalTest extends \PHPUnit_Framework_TestCase
      */
     public function testDateIntervalMinutes()
     {
-        $this->assertEquals('1 minute ago', $this->twigExt->date_interval('-1minutes'));
-        $this->assertEquals('2 minutes ago', $this->twigExt->date_interval('-2minutes'));
+        $this->assertEquals('1 minute ago', $this->twigExtension->date_interval('-1minutes'));
+        $this->assertEquals('2 minutes ago', $this->twigExtension->date_interval('-2minutes'));
     }
 
     /**
@@ -72,8 +81,8 @@ class DateIntervalTest extends \PHPUnit_Framework_TestCase
      */
     public function testDateIntervalHours()
     {
-        $this->assertEquals('1 hour ago', $this->twigExt->date_interval('-1hours'));
-        $this->assertEquals('2 hours ago', $this->twigExt->date_interval('-2hours'));
+        $this->assertEquals('1 hour ago', $this->twigExtension->date_interval('-1hours'));
+        $this->assertEquals('2 hours ago', $this->twigExtension->date_interval('-2hours'));
     }
 
     /**
@@ -81,8 +90,8 @@ class DateIntervalTest extends \PHPUnit_Framework_TestCase
      */
     public function testDateIntervalDays()
     {
-        $this->assertEquals('1 day ago', $this->twigExt->date_interval('-1days'));
-        $this->assertEquals('2 days ago', $this->twigExt->date_interval('-2days'));
+        $this->assertEquals('1 day ago', $this->twigExtension->date_interval('-1days'));
+        $this->assertEquals('2 days ago', $this->twigExtension->date_interval('-2days'));
     }
 
     /**
@@ -90,8 +99,8 @@ class DateIntervalTest extends \PHPUnit_Framework_TestCase
      */
     public function testDateIntervalMonths()
     {
-        $this->assertEquals('1 month ago', $this->twigExt->date_interval('-1months'));
-        $this->assertEquals('2 months ago', $this->twigExt->date_interval('-2months'));
+        $this->assertEquals('1 month ago', $this->twigExtension->date_interval('-1months'));
+        $this->assertEquals('2 months ago', $this->twigExtension->date_interval('-2months'));
     }
 
     /**
@@ -99,7 +108,7 @@ class DateIntervalTest extends \PHPUnit_Framework_TestCase
      */
     public function testDateIntervalYears()
     {
-        $this->assertEquals('1 year ago', $this->twigExt->date_interval('-1years'));
-        $this->assertEquals('2 years ago', $this->twigExt->date_interval('-2years'));
+        $this->assertEquals('1 year ago', $this->twigExtension->date_interval('-1years'));
+        $this->assertEquals('2 years ago', $this->twigExtension->date_interval('-2years'));
     }
 }

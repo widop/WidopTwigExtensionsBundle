@@ -1,6 +1,13 @@
 <?php
 
-system(sprintf('php %s', escapeshellarg(__DIR__.'/bin/vendors')));
+/*
+ * This file is part of the Widop package.
+ *
+ * (c) Widop <contact@widop.com>
+ *
+ * For the full copyright and license information, please read the LICENSE
+ * file that was distributed with this source code.
+ */
 
 require_once __DIR__.'/'.$_SERVER['SYMFONY'].'/Symfony/Component/ClassLoader/UniversalClassLoader.php';
 require_once __DIR__.'/vendor/twig/lib/Twig/Autoloader.php';
