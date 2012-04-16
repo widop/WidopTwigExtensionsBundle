@@ -1,5 +1,7 @@
 The bundle offers some additional twig extensions.
 
+[![Build Status](https://secure.travis-ci.org/widop/WidopTwigExtensionsBundle.png)](http://travis-ci.org/widop/WidopTwigExtensionsBundle)
+
 The available extensions are:
 
  - `date_interval` Acts as an inversed countdown.
