@@ -28,6 +28,11 @@ class WidopTwigHelpersExtension extends \Twig_Extension
     private $translator;
 
     /**
+     * @var string The strftime format (used by the datei18n filter|function).
+     */
+    private $format;
+
+    /**
      * The constructor needs a translator (and the locale for the moment).
      *
      * @param \Symfony\Component\Translation\TranslatorInterface $translator The translator.
@@ -36,6 +41,7 @@ class WidopTwigHelpersExtension extends \Twig_Extension
     public function __construct(TranslatorInterface $translator, $locale)
     {
         $this->setTranslator($translator);
+        $this->setFormat("%d. %B, %G");
 
         /**
          * @todop Use the user locale insted of the default locale.
@@ -58,6 +64,30 @@ class WidopTwigHelpersExtension extends \Twig_Extension
     }
 
     /**
+     * Gets the datei18n format
+     *
+     * @return string
+     */
+    public function getFormat()
+    {
+        return $this->format;
+    }
+
+    /**
+     * Sets the datei18n format.
+     *
+     * @param string $format The date format.
+     *
+     * @return Widop\TwigExtensionsBundle\Twig\Extension\WidopTwigHelpersExtension
+     */
+    public function setFormat($format)
+    {
+        $this->format = $format;
+
+        return $this;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getFilters()
@@ -65,6 +95,7 @@ class WidopTwigHelpersExtension extends \Twig_Extension
         return array(
             'date_interval' => new \Twig_Filter_Method($this, 'date_interval', array('is_safe' => array('html'))),
             'truncate_at'   => new \Twig_Filter_Method($this, 'truncate_at', array('is_safe' => array('html'))),
+            'datei18n'      => new \Twig_Filter_Method($this, 'datei18n', array('is_safe' => array('html')))
         );
     }
 
@@ -76,6 +107,7 @@ class WidopTwigHelpersExtension extends \Twig_Extension
         return array(
             'date_interval' => new \Twig_Function_Method($this, 'date_interval', array('is_safe' => array('html'))),
             'truncate_at' => new \Twig_Function_Method($this, 'truncate_at', array('is_safe' => array('html'))),
+            'datei18n'      => new \Twig_Filter_Method($this, 'datei18n', array('is_safe' => array('html')))
         );
     }
 
@@ -195,6 +227,27 @@ class WidopTwigHelpersExtension extends \Twig_Extension
         }
 
         return trim(substr($string, 0, $offset));
+    }
+
+    /**
+     * Format a date (with I18N).
+     *
+     * @param \DateTime|null $datetime The datetime to format.
+     * @param string|null    $format   The format to used.
+     *
+     * @return string
+     */
+    public function datei18n(\DateTime $datetime = null, $format = null)
+    {
+        if ($datetime === null) {
+            $datetime = new \DateTime();
+        }
+
+        if ($format === null) {
+            $format = $this->format;
+        }
+
+        return strftime($format, $datetime->getTimestamp());
     }
 
     /**
