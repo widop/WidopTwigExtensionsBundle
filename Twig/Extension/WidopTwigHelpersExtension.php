@@ -106,8 +106,8 @@ class WidopTwigHelpersExtension extends \Twig_Extension
     {
         return array(
             'date_interval' => new \Twig_Function_Method($this, 'date_interval', array('is_safe' => array('html'))),
-            'truncate_at' => new \Twig_Function_Method($this, 'truncate_at', array('is_safe' => array('html'))),
-            'datei18n'      => new \Twig_Filter_Method($this, 'datei18n', array('is_safe' => array('html')))
+            'truncate_at'   => new \Twig_Function_Method($this, 'truncate_at', array('is_safe' => array('html'))),
+            'datei18n'      => new \Twig_Function_Method($this, 'datei18n', array('is_safe' => array('html')))
         );
     }
 
