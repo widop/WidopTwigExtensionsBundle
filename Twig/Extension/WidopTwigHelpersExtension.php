@@ -11,8 +11,7 @@
 
 namespace Widop\TwigExtensionsBundle\Twig\Extension;
 
-use Symfony\Component\HttpKernel\KernelInterface,
-    Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * This class declares custom twig filters and functions.
@@ -31,16 +30,10 @@ class WidopTwigHelpersExtension extends \Twig_Extension
      * The constructor needs a translator (and the locale for the moment).
      *
      * @param \Symfony\Component\Translation\TranslatorInterface $translator The translator.
-     * @param string                                             $locale     The variable %locale%.
      */
-    public function __construct(TranslatorInterface $translator, $locale)
+    public function __construct(TranslatorInterface $translator)
     {
         $this->setTranslator($translator);
-
-        /**
-         * @todop Use the user locale insted of the default locale.
-         */
-        $this->translator->setLocale($locale);
     }
 
     /**
