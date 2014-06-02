@@ -5,7 +5,7 @@ parameters:
 services:
     widop_twig_extensions.helpers:
       class: %widop_twig_extensions.helpers.class%
-      arguments: [ @translator, %locale% ]
+      arguments: [ @translator ]
       public: false
       tags:
         - { name: twig.extension }
