@@ -56,6 +56,7 @@ class DateIntervalTest extends \PHPUnit_Framework_TestCase
         $twig->addExtension($this->twigExtension);
         $this->assertEquals('A few seconds ago', $twig->render("{{ date_interval() }}"));
         $this->assertEquals('A few seconds ago', $twig->render("{{ 'now' | date_interval }}"));
+        $this->assertEquals('In 2 days', $twig->render("{{ date('2days') | date_interval }}"));
     }
 
     /**
@@ -65,6 +66,7 @@ class DateIntervalTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals('1 minute ago', $this->twigExtension->date_interval(new \DateTime('-1minutes')));
         $this->assertEquals('2 minutes ago', $this->twigExtension->date_interval(new \DateTime('-2minutes')));
+        $this->assertEquals('In 2 minutes', $this->twigExtension->date_interval(new \DateTime('2minutes')));
     }
 
     /**
@@ -74,6 +76,7 @@ class DateIntervalTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals('1 minute ago', $this->twigExtension->date_interval('-1minutes'));
         $this->assertEquals('2 minutes ago', $this->twigExtension->date_interval('-2minutes'));
+        $this->assertEquals('In 2 minutes', $this->twigExtension->date_interval('2minutes'));
     }
 
     /**
@@ -83,6 +86,7 @@ class DateIntervalTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals('1 hour ago', $this->twigExtension->date_interval('-1hours'));
         $this->assertEquals('2 hours ago', $this->twigExtension->date_interval('-2hours'));
+        $this->assertEquals('In 2 hours', $this->twigExtension->date_interval('2hours'));
     }
 
     /**
@@ -92,6 +96,7 @@ class DateIntervalTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals('1 day ago', $this->twigExtension->date_interval('-1days'));
         $this->assertEquals('2 days ago', $this->twigExtension->date_interval('-2days'));
+        $this->assertEquals('In 2 days', $this->twigExtension->date_interval('2days'));
     }
 
     /**
@@ -101,6 +106,7 @@ class DateIntervalTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals('1 month ago', $this->twigExtension->date_interval('-1months'));
         $this->assertEquals('2 months ago', $this->twigExtension->date_interval('-2months'));
+        $this->assertEquals('In 2 months', $this->twigExtension->date_interval('2months'));
     }
 
     /**
@@ -110,5 +116,6 @@ class DateIntervalTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEquals('1 year ago', $this->twigExtension->date_interval('-1years'));
         $this->assertEquals('2 years ago', $this->twigExtension->date_interval('-2years'));
+        $this->assertEquals('In 2 years', $this->twigExtension->date_interval('2years'));
     }
 }

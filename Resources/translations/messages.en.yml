@@ -1,4 +1,6 @@
-'%nb% %moment%': '%nb% %moment% ago'
+'%nb% %moment%':
+    past: '%nb% %moment% ago'
+    future: 'In %nb% %moment%'
 
 date_interval:
     year: '{1}year|]1,Inf]years'

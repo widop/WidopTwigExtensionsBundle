@@ -114,9 +114,9 @@ class WidopTwigHelpersExtension extends \Twig_Extension
 
         $moment = $this->translator->transChoice($moment, $intervalNumber);
 
-        return $this->translator->trans('%nb% %moment%', array(
-            '%nb%'      => $intervalNumber,
-            '%moment%'  => $moment
+        return $this->translator->trans('%nb% %moment%.'.($interval->invert ? 'past' : 'future'), array(
+            '%nb%'     => $intervalNumber,
+            '%moment%' => $moment
         ));
     }
 
